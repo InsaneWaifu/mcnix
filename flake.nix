@@ -15,6 +15,6 @@
       in import ./lib { inherit pkgs self; }
     );
 
-    nixosModules.mcnix = import ./lib/module.nix { inherit self; };
+    nixosModules.default = import ./lib/module.nix { inherit self; };
   };
 }
