@@ -222,7 +222,7 @@ def handle_spigot():
     )
     print(
         "(fetchSpigotPlugin "
-        + f'"{plugin_name}" "{plugin_id}"'
+        + f'"{plugin_name}" "{plugin_id}" '
         + f'"{selected_version_id}" "{nix_hash}")'
     )
 
