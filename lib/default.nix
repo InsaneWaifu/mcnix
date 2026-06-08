@@ -1,14 +1,25 @@
 { pkgs, self }:
 
-let inherit (pkgs) lib;
-  validateArtifact = plugin: (
+let
+  inherit (pkgs) lib;
+  validateArtifact =
+    plugin:
+    (
       assert builtins.isAttrs plugin;
       assert lib.isDerivation plugin.jar;
       assert builtins.isString plugin.jarName;
-      plugin);
-  
-in {
-  mkServer = { java, serverJar, javaFlags, plugins ? [] }:
+      plugin
+    );
+
+in
+{
+  mkServer =
+    {
+      java,
+      serverJar,
+      javaFlags,
+      plugins ? [ ],
+    }:
     pkgs.writeTextFile {
       name = "server-manifest.json";
       text = builtins.toJSON {
@@ -40,11 +51,25 @@ in {
     jarName = "${name}-${versionId}";
   };
 
-  fetchPaperJar = { version, build, worker_url ? "https://jsonpath-worker.insanewaifu.workers.dev", hash }:
+  fetchPlugin = name: url: hash: {
+      jar = pkgs.fetchurl {
+          inherit url name hash;
+      };
+      jarName = "${name}";
+  };
+
+  fetchPaperJar =
+    {
+      version,
+      build,
+      worker_url ? "https://jsonpath-worker.insanewaifu.workers.dev",
+      hash,
+    }:
     let
       metadataUrl = "https://fill.papermc.io/v3/projects/paper/versions/${version}/builds/${build}";
       downloadPath = "$.downloads[\"server:default\"].url";
-    in {
+    in
+    {
       jar = pkgs.fetchurl {
         url = "${worker_url}?url=${pkgs.lib.strings.escapeURL metadataUrl}&path=${pkgs.lib.strings.escapeURL downloadPath}";
         pname = "paper";
