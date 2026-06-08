@@ -51,7 +51,7 @@ in
           NoNewPrivileges = true;
           StateDirectory = "mcnix/${name}";
           RuntimeDirectory = "mcnix/${name}";
-          WorkingDirectory = "mcnix/${name}";
+          WorkingDirectory = "/var/lib/mcnix/${name}";
           CacheDirectory = "mcnix/${name}";
           LogsDirectory = "mcnix/${name}";
           Restart = "always";
