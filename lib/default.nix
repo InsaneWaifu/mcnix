@@ -52,10 +52,17 @@ in
   };
 
   fetchPlugin = name: url: hash: {
-      jar = pkgs.fetchurl {
-          inherit url name hash;
-      };
-      jarName = "${name}";
+    jar = pkgs.fetchurl {
+      inherit url name hash;
+    };
+    jarName = "${name}";
+  };
+
+  fetchLocalPlugin = name: path: {
+    jar = pkgs.runCommand "${name}.jar" { } ''
+      cp ${path} $out
+    '';
+    jarName = name;
   };
 
   fetchPaperJar =
