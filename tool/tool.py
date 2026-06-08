@@ -6,6 +6,9 @@ from pathlib import Path
 
 
 def load_schema(path: str) -> dict:
+    path = Path(path)
+    if not path.exists():
+        return {}
     with open(path, "r") as f:
         return json.load(f)
 
