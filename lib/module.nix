@@ -44,10 +44,21 @@ in
         after = [ "network.target" ];
         wants = [ "network.target" ];
         serviceConfig = {
-          ExecStartPre = "${lib.getExe sync} --current-schema /var/lib/mcnix/${name}/schema --new-schema ${value} --plugins-dir /var/lib/mcnix/${name}/plugins";
+          ExecStartPre = [
+            (lib.escapeShellArgs [
+              "${lib.getExe sync}"
+              "--current-schema"
+              "/var/lib/mcnix/${name}/schema"
+              "--new-schema"
+              "${value}"
+              "--plugins-dir"
+              "/var/lib/mcnix/${name}/plugins"
+            ])
+            "${pkgs.coreutils}/bin/mkdir -p /run/mcnix/lain/tmp /run/mcnix/lain/jna"
+          ];
           ExecStart = "${value.java} ${value.javaFlags} -jar ${value.serverJar}";
+          Environment = [ "LD_LIBRARY_PATH=${lib.makeLibraryPath [ pkgs.udev ]}" "JAVA_TOOL_OPTIONS=\"-Djava.io.tmpdir=/run/mcnix/lain/tmp -Djna.tmpdir=/run/mcnix/lain/jna\"" ];
           DynamicUser = true;
-          PrivateTmp = true;
           NoNewPrivileges = true;
           StateDirectory = "mcnix/${name}";
           RuntimeDirectory = "mcnix/${name}";
@@ -62,6 +73,7 @@ in
           ProtectHome = true;
           RestrictSUIDSGID = true;
           LockPersonality = true;
+          MemoryDenyWriteExecute = false;
         };
       };
     }) cfg.servers;
