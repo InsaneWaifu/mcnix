@@ -19,16 +19,17 @@ sync =
       description = "Sync Minecraft plugins from schema diff";
       license = licenses.mit;
       platforms = platforms.linux;
+      mainProgram = "sync-plugins";
     };
   };
 in {
   options.mcnix.enable = lib.mkEnableOption "Enable minecraft";
   options.mcnix.servers = lib.mkOption {
-    type = types.addCheck (types.attrsOf types.package) (x: x != {});
+    type = lib.types.addCheck (lib.types.attrsOf lib.types.package) (x: x != {});
     default = {};
     description = "Named minecraft server configs";
   };
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     systemd.services = lib.mapAttrs'
       (name: value: {
         name = "mcnix-${name}";

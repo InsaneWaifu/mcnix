@@ -19,6 +19,7 @@ in {
       passthru = {
         java = lib.getExe java;
         serverJar = serverJar.jar;
+        inherit javaFlags;
       };
     };
 
